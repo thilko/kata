@@ -41,5 +41,30 @@ public class SortTest {
         MaxHeap heap = new MaxHeap(numbersToSort);
 
         assertThat(heap.getMax(), is(9));
+        assertThat(heap.getMax(), is(8));
+    }
+
+    @Test
+    public void getMaximum_withHeapSort_sizeIsReduced(){
+        MaxHeap heap = new MaxHeap(numbersToSort);
+
+        assertThat(heap.getMax(), is(9));
+        assertThat(heap.size(), is(7));
+    }
+
+    @Test
+    public void getMaximum_twoItemsAreTaken_secondIsTaken(){
+        MaxHeap heap = new MaxHeap(numbersToSort);
+
+        assertThat(heap.getMax(), is(9));
+        assertThat(heap.getMax(), is(8));
+    }
+
+    @Test
+    public void insert_aMaxValue_willGetAsMax(){
+        MaxHeap heap = new MaxHeap(numbersToSort);
+        heap.insert(10);
+
+        assertThat(heap.getMax(), is(10));
     }
 }
