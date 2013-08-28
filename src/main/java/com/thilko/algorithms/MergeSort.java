@@ -21,7 +21,7 @@ public class MergeSort {
         Deque<Integer> rightStack = new ArrayDeque<Integer>();
         rightStack.addAll(convert(sortedRight));
 
-        List<Integer> result = new ArrayList<Integer>(sortedLeft.length + sortedRight.length);
+        List<Integer> result = new ArrayList<>(sortedLeft.length + sortedRight.length);
         while(!leftStack.isEmpty() || !rightStack.isEmpty()){
             if(leftStack.isEmpty()){
                 result.addAll(rightStack);
