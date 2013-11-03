@@ -1,4 +1,4 @@
-package de.iteratec.draeger;
+package com.thilko.checkout;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
