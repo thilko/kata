@@ -7,24 +7,25 @@ class AnagramSpec extends Specification {
         anagrams(word) == anagrams
 
         where:
-        word | anagrams
-        ""   | [""]
-        "a"  | ["a"]
-        "ab" | ["ab", "ba"]
-
+        word   | anagrams
+        ""     | [""]
+        "a"    | ["a"]
+        "ab"   | ["ab", "ba"]
+        "abc"  | ["abc", "acb", "bac", "bca", "cab", "cba"]
+        "abcd" | ["abcd", "abdc", "acbd", "acdb", "adbc", "adcb",
+                  "bacd", "badc", "bcad", "bcda", "bdac", "bdca",
+                  "cabd", "cadb", "cbad", "cbda", "cdab", "cdba",
+                  "dabc", "dacb", "dbac", "dbca", "dcab", "dcba"]
     }
 
 
     def anagrams(word){
         if(word.size() == 0){
             return [""]
-        }else if(word.size() == 1){
-            return [word]
         }else{
-            def stringAsList = word.toList()
-            return [stringAsList[0]+stringAsList[1],
-                    stringAsList[1]+stringAsList[0]
-                   ]
+            def result = []
+            word.toList().eachPermutation{result << it}
+            return result.collect{it.join("")}
         }
     }
 }
