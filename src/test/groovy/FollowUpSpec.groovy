@@ -16,6 +16,9 @@ class FollowUpSpec extends Specification {
 
     def "10days@followup.com returns 7 days from now"() {
         given:
+        def target = "world"
+        def g = "hello ${target}"
+        println g
         def mail = "10days@followup.com"
 
         when:

@@ -107,7 +107,6 @@ class StringCalculatorSpec extends Specification {
 
         checkForNegatives(input)
 
-
         return input.split(" ")
                 .collect { it as Integer }
                 .collect { it > 1000 ? 0 : it }
