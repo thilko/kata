@@ -119,8 +119,6 @@ class PotterSpec extends Specification {
 
     class ShoppingCart {
         def books = []
-        private BigDecimal discount = 0.95
-
         Object calculateTotalPrice() {
             BigDecimal totalPrice = 0
 
