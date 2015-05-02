@@ -34,6 +34,10 @@ public class WalMartProduct {
         return type.getPrice().multiply(weight.asBigDecimal()).setScale(2, RoundingMode.HALF_UP);
     }
 
+    public WalMartProductType getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
         String firstPart = format("%s",type.name());
@@ -41,6 +45,10 @@ public class WalMartProduct {
             return format("%s with weight %s", firstPart, weight.asBigDecimal());
         }
         return firstPart;
+    }
+
+    public boolean isMilk(){
+        return WalMartProductType.MILK.equals(type);
     }
 
 }

@@ -8,6 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CheckoutTest {
 
@@ -15,7 +18,7 @@ public class CheckoutTest {
 
     @Before
     public void setUp() throws Exception {
-        checkout = new Checkout((p)-> System.out.println(format("You added a new Product: %s", p)));
+        checkout = new Checkout((p) -> System.out.println(format("You added a new Product: %s", p)));
     }
 
     @Test
@@ -76,4 +79,79 @@ public class CheckoutTest {
     public void scan_notAbleToScanBeerWithWeight_exception() throws Exception {
         checkout.scan(WalMartProductType.BEER, Weight.asKg("3.45"));
     }
+
+    @Test
+    public void discountsCanBeApplied_2EuroForMoreThan5milks() {
+        checkout.scan(WalMartProductType.MILK, 6);
+        checkout.useDiscount((products) -> {
+            Map<WalMartProductType, List<WalMartProduct>> groupedByTypes = products.stream().collect(Collectors.groupingBy(WalMartProduct::getType));
+
+            if(groupedByTypes.get(WalMartProductType.MILK).size() > 5){
+                return BigDecimal.valueOf(2);
+            }
+
+            return BigDecimal.ZERO;
+        });
+
+        Receipt receipt = checkout.checkout(System.out::println);
+        assertThat(receipt.getSum().intValue(), is(4));
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+Map<WalMartProductType, List<WalMartProduct>> groupedByTypes = products.stream().collect(Collectors.groupingBy(WalMartProduct::getType));
+
+if(groupedByTypes.get(WalMartProductType.MILK).size() > 5){
+        return BigDecimal.valueOf(2);
+        }
+
+        return BigDecimal.ZERO;
+*/
+
+
+/*
+long numberOfMilks = products.stream().filter(WalMartProduct::isMilk).count();
+if (numberOfMilks > 5) {
+        return BigDecimal.valueOf(2);
+        }
+        return BigDecimal.ZERO;
+
+
+        */
+
+/*
+int milkCounter = 0;
+for (WalMartProduct wp : products) {
+        if (wp.isMilk()) {
+        milkCounter++;
+        }
+        }
+
+        if (milkCounter > 5) {
+        return BigDecimal.valueOf(2);
+        }
+        return BigDecimal.ZERO;
+*/
