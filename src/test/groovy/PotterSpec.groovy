@@ -159,7 +159,7 @@ class PotterSpec extends Specification {
         static def applyRate = 3
 
         static def applicable(def uniqueBooks) {
-            uniqueBooks.size() == 3
+            uniqueBooks.size() == applyRate
         }
 
         static def applyDiscount(books, uniqueBooks) {
@@ -174,7 +174,7 @@ class PotterSpec extends Specification {
         static def applyRate = 4
 
         static def applicable(def uniqueBooks) {
-            uniqueBooks.size() == 4
+            uniqueBooks.size() == applyRate
         }
 
         static def applyDiscount(books, uniqueBooks) {
