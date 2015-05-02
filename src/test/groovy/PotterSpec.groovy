@@ -79,6 +79,17 @@ class PotterSpec extends Specification {
         basketPrice == 3 * 8 * 0.9
     }
 
+    def "for [2,3,4,5] books the 20% discount is applied and the total price is 25.60"() {
+        given:
+        def books = [2, 3, 4, 5]
+
+        when:
+        def basketPrice = calculatePrice(new ShoppingCart(books: books))
+
+        then:
+        basketPrice == 4 * 8 * 0.8
+    }
+
     def "for one 5% discount and one equal books the total price is 23.20"() {
         given:
         def books = [0, 1, 1]
@@ -120,6 +131,9 @@ class PotterSpec extends Specification {
             if (ThreeBookDiscount.applicable(uniqueBooks)) {
                 totalPrice = ThreeBookDiscount.applyDiscount(books, uniqueBooks)
             }
+            if (FourBookDiscount.applicable(uniqueBooks)) {
+                totalPrice = FourBookDiscount.applyDiscount(books, uniqueBooks)
+            }
 
             totalPrice + books.size() * 8
         }
@@ -155,4 +169,18 @@ class PotterSpec extends Specification {
 
     }
 
+    class FourBookDiscount {
+        static def discount = 0.8
+        static def applyRate = 4
+
+        static def applicable(def uniqueBooks) {
+            uniqueBooks.size() == 4
+        }
+
+        static def applyDiscount(books, uniqueBooks) {
+            uniqueBooks.each { books.remove((Object) it) }
+            applyRate * 8 * discount
+        }
+
+    }
 }
