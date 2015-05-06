@@ -2,7 +2,6 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 class PotterSpec extends Specification {
-    private int applyRate = 2
 
     def "0EUR if basket is empty"() {
         given:
