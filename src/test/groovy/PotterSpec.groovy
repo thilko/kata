@@ -141,8 +141,7 @@ class PotterSpec extends Specification {
     }
 
     class Discount {
-        def discount
-        def applyRate
+        def discount, applyRate
 
         def applicable(def uniqueBooks) {
             uniqueBooks.size() == applyRate
