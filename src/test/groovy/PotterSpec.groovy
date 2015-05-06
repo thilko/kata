@@ -70,7 +70,7 @@ class PotterSpec extends Specification {
 
     def "for [2,3,4] books the 10% discount is applied and the total price is 21.60"() {
         given:
-        def books = [2, 3,4]
+        def books = [2, 3, 4]
 
         when:
         def basketPrice = calculatePrice(new ShoppingCart(books: books))
@@ -119,18 +119,16 @@ class PotterSpec extends Specification {
 
     class ShoppingCart {
         def books = []
+        def discounts = [TwoBookDiscount, ThreeBookDiscount, FourBookDiscount]
+
         Object calculateTotalPrice() {
             BigDecimal totalPrice = 0
-
             def uniqueBooks = books.unique(false)
-            if (TwoBookDiscount.applicable(uniqueBooks)) {
-                totalPrice = TwoBookDiscount.applyDiscount(books, uniqueBooks)
-            }
-            if (ThreeBookDiscount.applicable(uniqueBooks)) {
-                totalPrice = ThreeBookDiscount.applyDiscount(books, uniqueBooks)
-            }
-            if (FourBookDiscount.applicable(uniqueBooks)) {
-                totalPrice = FourBookDiscount.applyDiscount(books, uniqueBooks)
+            discounts.each { println it.newInstance().applicable(uniqueBooks) }
+
+            def discount = discounts.find { it.newInstance().applicable(uniqueBooks) }
+            if (discount) {
+                totalPrice = discount.applyDiscount(books, uniqueBooks)
             }
 
             totalPrice + books.size() * 8
