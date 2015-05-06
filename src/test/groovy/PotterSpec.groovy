@@ -118,7 +118,9 @@ class PotterSpec extends Specification {
 
     class ShoppingCart {
         def books = []
-        def discounts = [new Discount(discount: 0.95, applyRate: 2), ThreeBookDiscount, FourBookDiscount]
+        def discounts = [new Discount(discount: 0.95, applyRate: 2),
+                         new Discount(discount: 0.9, applyRate: 3),
+                         new Discount(discount: 0.8, applyRate: 4)]
 
         Object calculateTotalPrice() {
             BigDecimal totalPrice = 0
@@ -146,52 +148,7 @@ class PotterSpec extends Specification {
             uniqueBooks.size() == applyRate
         }
 
-        def applyDiscount(books, uniqueBooks) {
-            uniqueBooks.each { books.remove((Object) it) }
-            applyRate * 8 * discount
-        }
-
-    }
-
-    class TwoBookDiscount {
-        static def discount = 0.95
-        static def applyRate = 2
-
-        static def applicable(def uniqueBooks) {
-            uniqueBooks.size() == applyRate
-        }
-
-        static def applyDiscount(books, uniqueBooks) {
-            uniqueBooks.each { books.remove((Object) it) }
-            applyRate * 8 * discount
-        }
-
-    }
-
-    class ThreeBookDiscount {
-        static def discount = 0.9
-        static def applyRate = 3
-
-        static def applicable(def uniqueBooks) {
-            uniqueBooks.size() == applyRate
-        }
-
-        static def applyDiscount(books, uniqueBooks) {
-            uniqueBooks.each { books.remove((Object) it) }
-            applyRate * 8 * discount
-        }
-
-    }
-
-    class FourBookDiscount {
-        static def discount = 0.8
-        static def applyRate = 4
-
-        static def applicable(def uniqueBooks) {
-            uniqueBooks.size() == applyRate
-        }
-
-        static def applyDiscount(books, uniqueBooks) {
+        BigDecimal applyDiscount(books, uniqueBooks) {
             uniqueBooks.each { books.remove((Object) it) }
             applyRate * 8 * discount
         }
