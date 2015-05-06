@@ -118,20 +118,39 @@ class PotterSpec extends Specification {
 
     class ShoppingCart {
         def books = []
-        def discounts = [TwoBookDiscount, ThreeBookDiscount, FourBookDiscount]
+        def discounts = [new Discount(discount: 0.95, applyRate: 2), ThreeBookDiscount, FourBookDiscount]
 
         Object calculateTotalPrice() {
             BigDecimal totalPrice = 0
             def uniqueBooks = books.unique(false)
-            discounts.each { println it.newInstance().applicable(uniqueBooks) }
 
-            def discount = discounts.find { it.newInstance().applicable(uniqueBooks) }
+            def discount = discounts.find {
+                if (it instanceof Class)
+                    it.newInstance().applicable(uniqueBooks)
+                else
+                    it.applicable(uniqueBooks)
+            }
             if (discount) {
                 totalPrice = discount.applyDiscount(books, uniqueBooks)
             }
 
             totalPrice + books.size() * 8
         }
+    }
+
+    class Discount {
+        def discount
+        def applyRate
+
+        def applicable(def uniqueBooks) {
+            uniqueBooks.size() == applyRate
+        }
+
+        def applyDiscount(books, uniqueBooks) {
+            uniqueBooks.each { books.remove((Object) it) }
+            applyRate * 8 * discount
+        }
+
     }
 
     class TwoBookDiscount {
