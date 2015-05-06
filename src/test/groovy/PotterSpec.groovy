@@ -126,12 +126,7 @@ class PotterSpec extends Specification {
             BigDecimal totalPrice = 0
             def uniqueBooks = books.unique(false)
 
-            def discount = discounts.find {
-                if (it instanceof Class)
-                    it.newInstance().applicable(uniqueBooks)
-                else
-                    it.applicable(uniqueBooks)
-            }
+            def discount = discounts.find { it.applicable(uniqueBooks) }
             if (discount) {
                 totalPrice = discount.applyDiscount(books, uniqueBooks)
             }
