@@ -1,3 +1,5 @@
+package codechef
+
 class Day {
 
     String lines

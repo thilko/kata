@@ -1,3 +1,5 @@
+package codechef
+
 import spock.lang.Specification
 
 class DataMangingSpec extends Specification {
