@@ -3,6 +3,7 @@ package com.thilko.kata;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.Assert;
 import static org.junit.Assert.assertThat;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class KataTest {
@@ -43,6 +44,7 @@ public class KataTest {
     }
 
     @Test
+    @Ignore
     public void fizzBuzz_returns_1_2_fizz_4_buzz_for_1to5() {
         String result = AbstractFizzBuzzFactoryServiceImpl.create().doFizz(1, 5);
 

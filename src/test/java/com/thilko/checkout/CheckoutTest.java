@@ -23,7 +23,7 @@ public class CheckoutTest {
 
     @Test
     public void addProduct_noProducts_0euro() throws Exception {
-        assertThat(checkout.checkout(System.out::println), is(BigDecimal.ZERO));
+        assertThat(checkout.checkout(System.out::println).getSum(), is(BigDecimal.ZERO));
     }
 
     @Test
@@ -58,14 +58,14 @@ public class CheckoutTest {
         checkout.scan(MILK);
         checkout.scan(MILK);
 
-        assertThat(checkout.checkout(System.out::println), is(new BigDecimal("8.10")));
+        assertThat(checkout.checkout(System.out::println).getSum(), is(new BigDecimal("8.10")));
     }
 
     @Test
     public void scan_withCount2_isScannedTwice() throws Exception {
         checkout.scan(BEER, 2);
 
-        assertThat(checkout.checkout(System.out::println), is(new BigDecimal("1.20")));
+        assertThat(checkout.checkout(System.out::println).getSum(), is(new BigDecimal("1.20")));
     }
 
     @Test

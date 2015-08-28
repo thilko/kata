@@ -22,6 +22,7 @@ class DiamondSpec extends Specification {
         if(letter == "B"){
             return " A \nB B\n A "
         }
+
         "A"
     }
 }

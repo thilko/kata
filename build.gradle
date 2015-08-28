@@ -1,9 +1,32 @@
 apply plugin: "java"
 apply plugin: "groovy"
+apply plugin: "info.solidsoft.pitest"
 
-repositories {
+
+repositories{
     mavenCentral()
 }
+
+buildscript {
+    repositories {
+
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.1.1"
+    }
+}
+
+
+pitest {
+    targetClasses = ['com.thilko.*']  //by default "${project.group}.*"
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+}
+
+
 
 dependencies {
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
@@ -16,5 +39,4 @@ dependencies {
     compile 'org.spockframework:spock-core:0.7-groovy-2.0'
     compile 'joda-time:joda-time:2.3'
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
-
 }
