@@ -24,7 +24,7 @@ public class Checkout {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal sum = (BigDecimal)products.stream().map(WalMartProduct::calculatePrice)
+        BigDecimal sum = products.stream().map(WalMartProduct::calculatePrice)
                 .collect(Collectors.reducing(BigDecimal::add)).get();
 
         return sum.subtract(discountCalculator.calculateDiscount(products));
