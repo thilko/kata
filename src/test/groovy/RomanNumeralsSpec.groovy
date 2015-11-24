@@ -1,6 +1,6 @@
 import spock.lang.Specification
 
-class RomanNumeralsSpec extends Specification {
+class   RomanNumeralsSpec extends Specification {
 
     def "For 0 '' is returned"() {
         given:
