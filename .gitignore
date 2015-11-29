@@ -2,3 +2,5 @@ lib/**/*
 out/**/*
 build/*
 .gradle/*
+**/.cache
+**/__pycache__
