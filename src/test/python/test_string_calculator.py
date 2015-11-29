@@ -34,13 +34,16 @@ class TestStringCalculator:
     def test_numbers_over_1000_are_ignored(self):
         assert self.add("//-\n1-2-1001-2") == 5
 
+    def test_delimiters_can_have_any_format(self):
+        assert self.add("//***\n1***2***6") == 9
+
     def add(self, stringToConvert):
         if not stringToConvert:
              return 0
 
         delimiter = ","
         if stringToConvert.startswith("//"):
-            search = re.search("^//(.)", stringToConvert)
+            search = re.search("^//(.*)", stringToConvert)
             delimiter = search.group(1)
             stringToConvert = stringToConvert.replace("//"+ delimiter + "\n", "")
 
