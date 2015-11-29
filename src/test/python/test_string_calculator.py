@@ -31,6 +31,9 @@ class TestStringCalculator:
         with pytest.raises(RuntimeError) as info:
             assert self.add("//;\n1;2;-2;2")
 
+    def test_numbers_over_1000_are_ignored(self):
+        assert self.add("//-\n1-2-1001-2") == 5
+
     def add(self, stringToConvert):
         if not stringToConvert:
              return 0
@@ -47,4 +50,4 @@ class TestStringCalculator:
         if negatives:
             raise RuntimeError
 
-        return sum(i for i in splitted_string)
+        return sum(i for i in splitted_string if i < 1000)
