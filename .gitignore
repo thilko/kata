@@ -1,6 +1,6 @@
 lib/**/*
-out/**/*
-build/*
+java/out/**/*
+java/build/
 .gradle/*
 **/.cache
 **/__pycache__
