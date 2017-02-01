@@ -5,9 +5,6 @@ import org.junit.Before
 import org.junit.Test
 import spock.lang.Specification
 import spock.lang.Unroll
-import sun.jvm.hotspot.oops.InstanceMirrorKlass
-
-import java.util.stream.Collectors
 
 import static com.thilko.checkout.WalMartProductType.*
 import static org.hamcrest.CoreMatchers.is
