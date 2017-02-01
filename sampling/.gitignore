@@ -1,0 +1,5 @@
+googletest
+googletest_build
+test_exec
+libgtest.a
+your_test
