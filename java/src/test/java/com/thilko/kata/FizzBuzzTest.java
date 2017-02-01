@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class KataTest {
+public class FizzBuzzTest {
 
     @Test
     public void fizzBuzz_returns_1_for_1() {

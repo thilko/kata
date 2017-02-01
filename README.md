@@ -8,3 +8,4 @@ A collection of my katas. I try to practice as often I can. I take the kata´ fr
 * http://ccd-school.de/coding-dojo/#cd1 (German)
 * http://www.codechef.com/
 * https://www.hackerrank.com/
+* https://www.reddit.com/r/dailyprogrammer/
