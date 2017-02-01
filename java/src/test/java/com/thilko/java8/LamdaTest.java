@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class LamdaTest {
 
@@ -17,9 +19,9 @@ public class LamdaTest {
     }
 
     @Test
-    public void reduce_withMap(){
+    public void reduce_withMap() {
         OptionalInt reduce = Arrays.asList("4", "3", "8").stream()
-                                .mapToInt(Integer::valueOf).reduce((sum, x) -> sum = sum + x);
+                .mapToInt(Integer::valueOf).reduce((sum, x) -> sum = sum + x);
         System.out.println(reduce.getAsInt());
     }
 
@@ -28,4 +30,12 @@ public class LamdaTest {
         Long numberOfFiles = Files.list(Paths.get(".")).collect(Collectors.counting());
         System.out.println(numberOfFiles);
     }
+
+    @Test
+    public void rawTypes() {
+        TestNubs<Long> g = new TestNubs<>();
+        List<String> eee = Arrays.asList("222", "eee");
+        g.nubs(eee);
+    }
+
 }

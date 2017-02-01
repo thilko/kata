@@ -2,83 +2,127 @@ package sampling
 
 import spock.lang.Specification
 
+import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAccessor
+import java.time.temporal.TemporalUnit
 
 class SampleSpec extends Specification {
 
-    def measuredAt = Instant.parse('2007-12-03T10:15:30.00Z')
+    def 'a measurement can be created'() {
+        given:
+        def measuredAt = Instant.parse('2007-12-03T10:15:30.00Z')
+        def value = 45.3d
 
-    def 'a sample can be created'() {
         when:
-        def sample = new Sample(45.7, measuredAt)
+        def measurement = new Measurement(measuredAt: measuredAt, value: value)
 
         then:
-        sample.value == 45.7
-        sample.measuredAt == measuredAt
+        measurement.measuredAt == measuredAt
+        measurement.value == value
     }
 
-    def 'the start time for the first sample range can be set'() {
+    def 'a single measurement is sampled to the end of sampling range'() {
         given:
-        def startSampleTime = Instant.parse('2007-12-03T10:15:25.00Z')
+        def sampler = new Sampler(start: Instant.parse('2007-12-03T10:15:30.00Z'))
+
+        def measuredAt = Instant.parse('2007-12-03T10:15:34.00Z')
+        def measurement = new Measurement(measuredAt: measuredAt, value: 45.3)
 
         when:
-        def sampled = new Sampler(startSampleTime: startSampleTime).sample(new Sample(45.7, measuredAt))
+        def sampled = sampler.sample(measurement)
 
         then:
-        sampled[0].measuredAt == Instant.parse('2007-12-03T10:15:40.00Z')
+        sampled[0].measuredAt == Instant.parse('2007-12-03T10:20:30.00Z')
+        sampled[0].value == 45.3d
     }
 
-    def 'the latest sample inside a sample range is sampled'() {
+    def 'the last of two measurement is sampled to the end of sampling range'() {
         given:
-        def startSampleTime = Instant.parse('2007-12-03T10:15:25.00Z')
-        def firstSample = new Sample(45.7, Instant.parse('2007-12-03T10:15:26.00Z'))
-        def secondSample = new Sample(98.5, Instant.parse('2007-12-03T10:15:27.00Z'))
+        def sampler = new Sampler(start: Instant.parse('2007-12-03T10:15:30.00Z'))
+
+        def measuredAt1 = Instant.parse('2007-12-03T10:15:34.00Z')
+        def measurement1 = new Measurement(measuredAt: measuredAt1, value: 21.5)
+
+        def measuredAt2 = Instant.parse('2007-12-03T10:15:35.00Z')
+        def measurement2 = new Measurement(measuredAt: measuredAt2, value: 99.7)
 
         when:
-        def sampled = new Sampler(startSampleTime: startSampleTime).sample(firstSample, secondSample)
+        def sampled = sampler.sample(measurement1, measurement2)
 
         then:
-        sampled[0].measuredAt == Instant.parse('2007-12-03T10:15:40.00Z')
-        sampled[0].value == 98.5
+        sampled[0].measuredAt == Instant.parse('2007-12-03T10:20:30.00Z')
+        sampled[0].value == 99.7d
     }
 
-    def 'for each sample range one sample is returned'() {
+    def 'the order of the given measurements does not matter'() {
         given:
-        def startSampleTime = Instant.parse('2007-12-03T10:15:25.00Z')
-        def firstSample = new Sample(45.7, Instant.parse('2007-12-03T10:15:26.00Z'))
-        def secondSample = new Sample(98.5, Instant.parse('2007-12-03T10:15:41.00Z'))
+        def sampler = new Sampler(start: Instant.parse('2007-12-03T10:15:30.00Z'))
+
+        def measuredAt1 = Instant.parse('2007-12-03T10:15:34.00Z')
+        def measurement1 = new Measurement(measuredAt: measuredAt1, value: 21.5)
+
+        def measuredAt2 = Instant.parse('2007-12-03T10:15:35.00Z')
+        def measurement2 = new Measurement(measuredAt: measuredAt2, value: 99.7)
 
         when:
-        def sampled = new Sampler(startSampleTime: startSampleTime).sample(firstSample, secondSample)
+        def sampled = sampler.sample(measurement2, measurement1)
+
+        then:
+        sampled[0].measuredAt == Instant.parse('2007-12-03T10:20:30.00Z')
+        sampled[0].value == 99.7d
+    }
+
+    def 'two measurements in different ranges can be sampled'() {
+        given:
+        def sampler = new Sampler(start: Instant.parse('2007-12-03T10:15:30.00Z'))
+
+        def measuredAt1 = Instant.parse('2007-12-03T10:15:34.00Z')
+        def measurement1 = new Measurement(measuredAt: measuredAt1, value: 21.5)
+
+        def measuredAt2 = Instant.parse('2007-12-03T10:20:36.00Z')
+        def measurement2 = new Measurement(measuredAt: measuredAt2, value: 99.7)
+
+        when:
+        def sampled = sampler.sample(measurement1, measurement2)
 
         then:
         sampled.size() == 2
-        sampled[0].measuredAt == Instant.parse('2007-12-03T10:15:40.00Z')
-        sampled[0].value == 45.7
-        sampled[1].measuredAt == Instant.parse('2007-12-03T10:15:55.00Z')
-        sampled[1].value == 98.5
+        sampled[0].measuredAt == Instant.parse('2007-12-03T10:20:30.00Z')
+        sampled[0].value == 21.5d
+        sampled[1].measuredAt == Instant.parse('2007-12-03T10:25:30.00Z')
+        sampled[1].value == 99.7d
     }
 
-    def 'for each sample range only the latest sample is returned'() {
+    def 'the order in the second range does not matter'() {
         given:
-        def startSampleTime = Instant.parse('2007-12-03T10:15:25.00Z')
-        def firstSample = new Sample(123.5, Instant.parse('2007-12-03T10:15:26.00Z'))
-        def secondSample = new Sample(45.7, Instant.parse('2007-12-03T10:15:27.00Z'))
-        def thirdSample = new Sample(99.7, Instant.parse('2007-12-03T10:15:41.00Z'))
-        def forthSample = new Sample(108.5, Instant.parse('2007-12-03T10:15:42.00Z'))
+        def sampler = new Sampler(start: Instant.parse('2007-12-03T10:15:30.00Z'))
+
+        def measuredAt1 = Instant.parse('2007-12-03T10:15:34.00Z')
+        def measurement1 = new Measurement(measuredAt: measuredAt1, value: 21.5)
+
+        def measuredAt2 = Instant.parse('2007-12-03T10:20:36.00Z')
+        def measurement2 = new Measurement(measuredAt: measuredAt2, value: 99.7)
+
+        def measuredAt3 = Instant.parse('2007-12-03T10:20:35.00Z')
+        def measurement3 = new Measurement(measuredAt: measuredAt3, value: 102.7)
 
         when:
-        def sampled = new Sampler(startSampleTime: startSampleTime).sample(firstSample,
-                secondSample,
-                thirdSample, forthSample)
+        def sampled = sampler.sample(measurement1, measurement2, measurement3)
 
         then:
         sampled.size() == 2
-        sampled[0].measuredAt == Instant.parse('2007-12-03T10:15:40.00Z')
-        sampled[0].value == 45.7
-        sampled[1].measuredAt == Instant.parse('2007-12-03T10:15:55.00Z')
-        sampled[1].value == 108.5
+        sampled[0].measuredAt == Instant.parse('2007-12-03T10:20:30.00Z')
+        sampled[0].value == 21.5d
+        sampled[1].measuredAt == Instant.parse('2007-12-03T10:25:30.00Z')
+        sampled[1].value == 99.7d
     }
 
+    def 'bla'(){
+        expect:
+        LocalDate.of(2000, 1, 30).plusMonths(2).minusMonths(2) == LocalDate.of(2000, 2, 28)
+    }
 
 }
