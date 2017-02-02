@@ -4,6 +4,7 @@ import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,31 +42,71 @@ public class DefusingBombTest {
         assertThat(defuse(Arrays.asList(Wire.WHITE, Wire.GREEN)), Is.is(true));
     }
 
+    @Test
+    public void ifYouCutARedCableYouHaveToCutAGreenOne() {
+        assertThat(defuse(Arrays.asList(Wire.RED, Wire.GREEN)), Is.is(true));
+        assertThat(defuse(Arrays.asList(Wire.RED, Wire.WHITE)), Is.is(false));
+        assertThat(defuse(Collections.singletonList(Wire.RED)), Is.is(false));
+    }
+
     private boolean defuse(final List<Wire> wires) {
-        BombState white = null;
+        BombState state = new StartState();
         for (Wire wire : wires) {
-            if(white == null && wire.equals(Wire.WHITE)){
-                white = new WhiteCutThrough();
-            }else{
-                if (!white.cutCable(wire)) {
-                    return false;
-                }
+            if (state.cutCable(wire)) {
+                return false;
+            }
+
+            if (wire.equals(Wire.RED)) {
+                state = new RedCutThrough();
+            } else {
+                state = new WhiteCutThrough();
             }
         }
 
-        return true;
+        return state.end();
     }
 
-    public enum Wire {BLACK, GREEN, WHITE}
+    public enum Wire {BLACK, GREEN, RED, WHITE}
 
     private interface BombState {
         boolean cutCable(Wire wire);
+
+        boolean end();
     }
 
     private class WhiteCutThrough implements BombState {
         @Override
         public boolean cutCable(final Wire wire) {
-            return !(wire.equals(Wire.WHITE) || wire.equals(Wire.BLACK));
+            return wire.equals(Wire.WHITE) || wire.equals(Wire.BLACK);
+        }
+
+        @Override
+        public boolean end() {
+            return true;
+        }
+    }
+
+    private class StartState implements BombState {
+        @Override
+        public boolean cutCable(Wire wire) {
+            return false;
+        }
+
+        @Override
+        public boolean end() {
+            return true;
+        }
+    }
+
+    private class RedCutThrough implements BombState {
+        @Override
+        public boolean cutCable(Wire wire) {
+            return !wire.equals(Wire.GREEN);
+        }
+
+        @Override
+        public boolean end() {
+            return false;
         }
     }
 }
